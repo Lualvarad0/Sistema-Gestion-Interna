@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Models\Encuentro;
+use App\Models\{Encuentro, Notificacion};
 
 class EncuentroController extends BaseController
 {
@@ -43,7 +43,18 @@ class EncuentroController extends BaseController
             }
         }
 
+        $data['latitud']  = !empty($_POST['latitud'])  ? (float) $_POST['latitud']  : null;
+        $data['longitud'] = !empty($_POST['longitud']) ? (float) $_POST['longitud'] : null;
+
         Encuentro::create($data);
+
+        Notificacion::notify(
+            'Nuevo encuentro ciudadano',
+            "Encuentro en {$data['parroquia']} con {$data['nombrecontacto']} — estado: {$data['estado']}.",
+            'success',
+            'encuentros'
+        );
+
         $this->setFlash('success', 'Encuentro ciudadano registrado exitosamente.');
         $this->redirect('/encuentros');
     }

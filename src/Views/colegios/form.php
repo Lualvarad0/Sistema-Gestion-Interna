@@ -1,5 +1,5 @@
 <div class="row justify-content-center">
-    <div class="col-lg-8 col-xl-7">
+    <div class="col-lg-10 col-xl-9">
 
         <div class="d-flex align-items-center gap-3 mb-4">
             <a href="<?= url('/colegios') ?>" class="btn btn-outline-secondary btn-sm">
@@ -74,6 +74,23 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
+
+                        <div class="col-12 mt-2">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-geo-alt me-1 text-danger"></i>Geolocalización
+                                <span class="text-muted fw-normal small">(opcional)</span>
+                            </label>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <button type="button" id="btn-geolocate" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-crosshair me-1"></i>Usar mi ubicación
+                                </button>
+                                <span id="geo-coords" class="text-muted small"></span>
+                            </div>
+                            <div id="map-picker" style="height:300px; border-radius:8px; border:1px solid #dee2e6;"></div>
+                            <div class="form-text">Haz clic en el mapa para marcar la ubicación exacta.</div>
+                            <input type="hidden" id="latitud"  name="latitud"  value="">
+                            <input type="hidden" id="longitud" name="longitud" value="">
+                        </div>
                     </div>
 
                     <hr class="my-4">
@@ -91,3 +108,45 @@
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    const map = L.map('map-picker').setView([-2.1975, -79.8862], 12);
+    let marker = null;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
+        maxZoom: 19
+    }).addTo(map);
+
+    function setMarker(lat, lng) {
+        if (marker) map.removeLayer(marker);
+        marker = L.marker([lat, lng]).addTo(map);
+        document.getElementById('latitud').value  = lat.toFixed(7);
+        document.getElementById('longitud').value = lng.toFixed(7);
+        document.getElementById('geo-coords').textContent =
+            'Lat: ' + lat.toFixed(5) + ', Lng: ' + lng.toFixed(5);
+    }
+
+    map.on('click', e => setMarker(e.latlng.lat, e.latlng.lng));
+
+    document.getElementById('btn-geolocate').addEventListener('click', function () {
+        if (!navigator.geolocation) return;
+        const btn = this;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Detectando...';
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                setMarker(pos.coords.latitude, pos.coords.longitude);
+                map.setView([pos.coords.latitude, pos.coords.longitude], 16);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-crosshair me-1"></i>Usar mi ubicación';
+            },
+            () => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-crosshair me-1"></i>Usar mi ubicación';
+            }
+        );
+    });
+})();
+</script>

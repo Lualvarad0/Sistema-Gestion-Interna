@@ -1,7 +1,16 @@
 <?php
+use App\Models\{User, Notificacion};
+
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $basePath    = parse_url(BASE_URL, PHP_URL_PATH);
 $route       = '/' . ltrim(substr($currentPath, strlen($basePath)), '/');
+
+$unreadCount = 0;
+$userRol     = '';
+if (!empty($currentUser)) {
+    $userRol     = $currentUser['rol'] ?? 'operador';
+    $unreadCount = Notificacion::unreadCount((int) $currentUser['id']);
+}
 
 function navLink(string $href, string $icon, string $label, string $route): string
 {
@@ -33,11 +42,33 @@ function navLink(string $href, string $icon, string $label, string $route): stri
                 <?= navLink('/cnel',       'lightning-charge',   'CNEL',       $route) ?>
                 <?= navLink('/encuentros', 'people',             'Encuentros', $route) ?>
                 <?= navLink('/actas',      'file-earmark-text',  'Actas',      $route) ?>
+                <?php if ($userRol === 'administrador'): ?>
+                    <?= navLink('/usuarios', 'people-gear', 'Usuarios', $route) ?>
+                <?php endif; ?>
             </ul>
-            <div class="d-flex align-items-center gap-3">
-                <span class="text-white-50 small">
-                    <i class="bi bi-person-circle me-1"></i><?= e($currentUser['username']) ?>
+            <div class="d-flex align-items-center gap-2">
+
+                <!-- Campana de notificaciones -->
+                <a href="<?= url('/notificaciones') ?>"
+                   class="btn btn-outline-light btn-sm position-relative<?= str_starts_with($route, '/notificaciones') ? ' active' : '' ?>"
+                   title="Notificaciones">
+                    <i class="bi bi-bell"></i>
+                    <?php if ($unreadCount > 0): ?>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:.6rem;">
+                            <?= $unreadCount > 99 ? '99+' : $unreadCount ?>
+                        </span>
+                    <?php endif; ?>
+                </a>
+
+                <!-- Badge de rol -->
+                <span class="badge bg-<?= e(User::getRoleColor($userRol)) ?> d-none d-lg-inline">
+                    <?= e(User::getRoleLabel($userRol)) ?>
                 </span>
+
+                <a href="<?= url('/perfil') ?>"
+                   class="btn btn-outline-light btn-sm<?= str_starts_with($route, '/perfil') ? ' active' : '' ?>">
+                    <i class="bi bi-person-circle me-1"></i><?= e($currentUser['username']) ?>
+                </a>
                 <a href="<?= url('/logout') ?>" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-box-arrow-right me-1"></i>Salir
                 </a>

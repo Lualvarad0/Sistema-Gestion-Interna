@@ -25,9 +25,9 @@ class Colegio extends BaseModel
     {
         $stmt = static::db()->prepare('
             INSERT INTO formulario
-                (nombreinstitucion, rector, direccion, telefono, distrito, idregistrocnel)
+                (nombreinstitucion, rector, direccion, telefono, distrito, idregistrocnel, latitud, longitud)
             VALUES
-                (:nombreinstitucion, :rector, :direccion, :telefono, :distrito, :idregistrocnel)
+                (:nombreinstitucion, :rector, :direccion, :telefono, :distrito, :idregistrocnel, :latitud, :longitud)
         ');
         return $stmt->execute($data);
     }

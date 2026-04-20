@@ -61,6 +61,27 @@ abstract class BaseController
         }
     }
 
+    /**
+     * Verifica que el usuario tenga uno de los roles indicados.
+     * Redirige al dashboard si no tiene permiso.
+     */
+    protected function requireRole(string ...$roles): void
+    {
+        $this->requireAuth();
+        $userRole = $_SESSION['user']['rol'] ?? 'operador';
+        if (!in_array($userRole, $roles, true)) {
+            $this->setFlash('error', 'No tiene permisos para acceder a esta sección.');
+            $this->redirect('/');
+        }
+    }
+
+    /** Devuelve true si el usuario autenticado tiene el rol indicado. */
+    protected function hasRole(string ...$roles): bool
+    {
+        $userRole = $_SESSION['user']['rol'] ?? 'operador';
+        return in_array($userRole, $roles, true);
+    }
+
     /** Guarda un mensaje flash en la sesión */
     protected function setFlash(string $type, string $message): void
     {

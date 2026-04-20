@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Models\Acta;
+use App\Models\{Acta, Notificacion};
 
 class ActaController extends BaseController
 {
@@ -44,6 +44,8 @@ class ActaController extends BaseController
             'nombretrabajador' => trim($_POST['nombretrabajador'] ?? ''),
             'cedula'           => $cedula,
             'parroquia'        => trim($_POST['parroquia'] ?? ''),
+            'latitud'          => !empty($_POST['latitud'])  ? (float) $_POST['latitud']  : null,
+            'longitud'         => !empty($_POST['longitud']) ? (float) $_POST['longitud'] : null,
         ];
 
         foreach ($data as $value) {
@@ -54,6 +56,14 @@ class ActaController extends BaseController
         }
 
         Acta::create($data);
+
+        Notificacion::notify(
+            'Nuevo trabajador registrado',
+            "Acta generada para {$data['nombretrabajador']} (C.I. {$data['cedula']}) — parroquia {$data['parroquia']}.",
+            'info',
+            'actas'
+        );
+
         $this->setFlash('success', 'Trabajador registrado en el acta exitosamente.');
         $this->redirect('/actas');
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Models\{Cnel, Acta};
+use App\Models\{Cnel, Acta, Notificacion};
 
 class CnelController extends BaseController
 {
@@ -43,6 +43,8 @@ class CnelController extends BaseController
             'distrito'          => trim($_POST['distrito'] ?? ''),
             'codtrabajador'     => !empty($_POST['codtrabajador']) ? (int) $_POST['codtrabajador'] : null,
             'nombretrabajador'  => trim($_POST['nombretrabajador'] ?? ''),
+            'latitud'           => !empty($_POST['latitud'])  ? (float) $_POST['latitud']  : null,
+            'longitud'          => !empty($_POST['longitud']) ? (float) $_POST['longitud'] : null,
         ];
 
         if ($data['nombreinstitucion'] === '') {
@@ -51,6 +53,14 @@ class CnelController extends BaseController
         }
 
         Cnel::create($data);
+
+        Notificacion::notify(
+            'Nuevo registro CNEL',
+            "Se registró trabajo de luminarias en '{$data['nombreinstitucion']}' — distrito {$data['distrito']}.",
+            'info',
+            'cnel'
+        );
+
         $this->setFlash('success', 'Registro CNEL guardado exitosamente.');
         $this->redirect('/cnel');
     }

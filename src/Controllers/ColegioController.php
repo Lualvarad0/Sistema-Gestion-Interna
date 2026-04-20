@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Models\{Colegio, Cnel};
+use App\Models\{Colegio, Cnel, Notificacion};
 
 class ColegioController extends BaseController
 {
@@ -40,6 +40,8 @@ class ColegioController extends BaseController
             'telefono'          => trim($_POST['telefono'] ?? ''),
             'distrito'          => trim($_POST['distrito'] ?? ''),
             'idregistrocnel'    => !empty($_POST['idregistrocnel']) ? (int) $_POST['idregistrocnel'] : null,
+            'latitud'           => !empty($_POST['latitud'])  ? (float) $_POST['latitud']  : null,
+            'longitud'          => !empty($_POST['longitud']) ? (float) $_POST['longitud'] : null,
         ];
 
         foreach (['nombreinstitucion', 'rector', 'direccion', 'telefono', 'distrito'] as $field) {
@@ -50,6 +52,14 @@ class ColegioController extends BaseController
         }
 
         Colegio::create($data);
+
+        Notificacion::notify(
+            'Nuevo colegio registrado',
+            "Se registró la institución '{$data['nombreinstitucion']}' en el distrito {$data['distrito']}.",
+            'success',
+            'colegios'
+        );
+
         $this->setFlash('success', 'Colegio registrado exitosamente.');
         $this->redirect('/colegios');
     }

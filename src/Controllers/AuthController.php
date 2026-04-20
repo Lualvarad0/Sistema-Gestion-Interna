@@ -38,10 +38,16 @@ class AuthController extends BaseController
         $user = User::findByUsername($username);
 
         if ($user !== null && password_verify($password, $user['password'])) {
+            if (isset($user['activo']) && !(bool)$user['activo']) {
+                $this->setFlash('error', 'Su cuenta está desactivada. Contacte al administrador.');
+                $this->redirect('/login');
+            }
             session_regenerate_id(true);
             $_SESSION['user'] = [
-                'id'       => $user['id'],
-                'username' => $user['username'],
+                'id'             => $user['id'],
+                'username'       => $user['username'],
+                'rol'            => $user['rol'] ?? 'operador',
+                'nombre_completo' => $user['nombre_completo'] ?? '',
             ];
             $this->redirect('/');
         }

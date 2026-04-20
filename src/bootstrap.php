@@ -9,7 +9,10 @@ use App\Controllers\{
     ColegioController,
     CnelController,
     EncuentroController,
-    ActaController
+    ActaController,
+    ProfileController,
+    UserController,
+    NotificacionController
 };
 
 // ─── Autoloader PSR-4 simplificado ───────────────────────────────────────────
@@ -63,5 +66,23 @@ $router->post('/encuentros',      [EncuentroController::class, 'store']);
 $router->get('/actas',       [ActaController::class, 'report']);
 $router->get('/actas/nuevo', [ActaController::class, 'form']);
 $router->post('/actas',      [ActaController::class, 'store']);
+
+// Perfil
+$router->get('/perfil',            [ProfileController::class, 'show']);
+$router->post('/perfil/profile',   [ProfileController::class, 'updateProfile']);
+$router->post('/perfil/password',  [ProfileController::class, 'updatePassword']);
+
+// Gestión de Usuarios (solo Administrador)
+$router->get('/usuarios',              [UserController::class, 'index']);
+$router->get('/usuarios/nuevo',        [UserController::class, 'form']);
+$router->post('/usuarios',             [UserController::class, 'store']);
+$router->get('/usuarios/{id}/editar',  [UserController::class, 'edit']);
+$router->post('/usuarios/{id}/update', [UserController::class, 'update']);
+$router->post('/usuarios/{id}/toggle', [UserController::class, 'toggle']);
+
+// Notificaciones
+$router->get('/notificaciones',              [NotificacionController::class, 'index']);
+$router->post('/notificaciones/{id}/leer',   [NotificacionController::class, 'markRead']);
+$router->post('/notificaciones/leer-todas',  [NotificacionController::class, 'markAllRead']);
 
 $router->dispatch();

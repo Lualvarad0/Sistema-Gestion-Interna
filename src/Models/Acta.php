@@ -11,8 +11,8 @@ class Acta extends BaseModel
     public static function create(array $data): bool
     {
         $stmt = static::db()->prepare('
-            INSERT INTO acta (codtrabajador, nombretrabajador, cedula, parroquia)
-            VALUES (:codtrabajador, :nombretrabajador, :cedula, :parroquia)
+            INSERT INTO acta (codtrabajador, nombretrabajador, cedula, parroquia, latitud, longitud)
+            VALUES (:codtrabajador, :nombretrabajador, :cedula, :parroquia, :latitud, :longitud)
         ');
         return $stmt->execute($data);
     }

@@ -41,7 +41,15 @@ class Router
         $routes = $this->routes[$method] ?? [];
 
         foreach ($routes as $route => $handler) {
-            $pattern = '#^' . preg_replace('/\{[^}]+\}/', '([^/]+)', preg_quote($route, '#')) . '$#';
+            // Split on {param} segments, quote literals, replace params with capture group
+            $parts   = preg_split('/(\{[^}]+\})/', $route, -1, PREG_SPLIT_DELIM_CAPTURE);
+            $regex   = '';
+            foreach ($parts as $part) {
+                $regex .= ($part !== '' && $part[0] === '{')
+                    ? '([^/]+)'
+                    : preg_quote($part, '#');
+            }
+            $pattern = '#^' . $regex . '$#';
 
             if (preg_match($pattern, $path, $matches)) {
                 array_shift($matches);

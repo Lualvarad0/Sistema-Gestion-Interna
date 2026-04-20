@@ -14,10 +14,10 @@ class Cnel extends BaseModel
         $stmt = static::db()->prepare('
             INSERT INTO registrocnel
                 (nombreinstitucion, nuevasluminarias, mantenimiento, tipo,
-                 cantidad, estado, distrito, codtrabajador, nombretrabajador)
+                 cantidad, estado, distrito, codtrabajador, nombretrabajador, latitud, longitud)
             VALUES
                 (:nombreinstitucion, :nuevasluminarias, :mantenimiento, :tipo,
-                 :cantidad, :estado, :distrito, :codtrabajador, :nombretrabajador)
+                 :cantidad, :estado, :distrito, :codtrabajador, :nombretrabajador, :latitud, :longitud)
         ');
         return $stmt->execute($data);
     }

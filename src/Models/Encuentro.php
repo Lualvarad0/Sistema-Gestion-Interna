@@ -12,9 +12,9 @@ class Encuentro extends BaseModel
     {
         $stmt = static::db()->prepare('
             INSERT INTO encuentros
-                (direccion, parroquia, estado, nombrecontacto, cedula, telefono)
+                (direccion, parroquia, estado, nombrecontacto, cedula, telefono, latitud, longitud)
             VALUES
-                (:direccion, :parroquia, :estado, :nombrecontacto, :cedula, :telefono)
+                (:direccion, :parroquia, :estado, :nombrecontacto, :cedula, :telefono, :latitud, :longitud)
         ');
         return $stmt->execute($data);
     }
