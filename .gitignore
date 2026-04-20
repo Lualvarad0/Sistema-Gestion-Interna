@@ -1,23 +1,23 @@
+# Dependencias
 /vendor/
 node_modules/
-npm-debug.log
-yarn-error.log
 
-# Laravel 4 specific
-bootstrap/compiled.php
-app/storage/
+# Configuración local (contiene credenciales)
+# config/app.php  ← descomenta si usas config/app.local.php
 
-# Laravel 5 & Lumen specific
-public/storage
-public/hot
+# Logs
+*.log
+/logs/
 
-# Laravel 5 & Lumen specific with changed public path
-public_html/storage
-public_html/hot
+# Sistema operativo
+.DS_Store
+Thumbs.db
 
-storage/*.key
-.env
-Homestead.yaml
-Homestead.json
-/.vagrant
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# PHP
 .phpunit.result.cache

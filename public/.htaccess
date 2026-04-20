@@ -1,0 +1,9 @@
+Options -MultiViews -Indexes
+RewriteEngine On
+
+# Permitir acceso a archivos y directorios reales (assets, documentos)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Todo lo demás pasa por el front controller
+RewriteRule ^ index.php [QSA,L]
