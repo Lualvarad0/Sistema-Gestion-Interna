@@ -71,6 +71,7 @@ $router->post('/actas',      [ActaController::class, 'store']);
 $router->get('/perfil',            [ProfileController::class, 'show']);
 $router->post('/perfil/profile',   [ProfileController::class, 'updateProfile']);
 $router->post('/perfil/password',  [ProfileController::class, 'updatePassword']);
+$router->post('/perfil/settings',  [ProfileController::class, 'updateSettings']);
 
 // Gestión de Usuarios (solo Administrador)
 $router->get('/usuarios',              [UserController::class, 'index']);
