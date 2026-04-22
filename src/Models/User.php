@@ -78,6 +78,34 @@ class User extends BaseModel
         ]);
     }
 
+    public static function updateProfileFull(
+        int    $id,
+        string $nombreCompleto,
+        string $email,
+        string $telefono,
+        string $cargo,
+        string $avatarColor
+    ): bool {
+        $allowed = ['blue', 'green', 'amber', 'red', 'purple', 'cyan'];
+        if (!in_array($avatarColor, $allowed, true)) {
+            $avatarColor = 'blue';
+        }
+
+        $stmt = static::db()->prepare(
+            'UPDATE `users`
+             SET nombre_completo = ?, email = ?, telefono = ?, cargo = ?, avatar_color = ?
+             WHERE id = ?'
+        );
+        return $stmt->execute([
+            $nombreCompleto !== '' ? $nombreCompleto : null,
+            $email !== '' ? $email : null,
+            $telefono    !== '' ? $telefono    : null,
+            $cargo       !== '' ? $cargo       : null,
+            $avatarColor,
+            $id,
+        ]);
+    }
+
     public static function updatePassword(int $id, string $hash): bool
     {
         $stmt = static::db()->prepare('UPDATE `users` SET password = ? WHERE id = ?');
